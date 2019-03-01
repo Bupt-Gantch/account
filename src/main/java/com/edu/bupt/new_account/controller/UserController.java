@@ -58,7 +58,13 @@ public class UserController {
             User u = userService.findUserByOpenid(openid);
             if (u != null) {
                 result.setStatus("error");
-                result.setResultMsg("user has already exist!");
+                result.setResultMsg("user has already existed!");
+                return result;
+            }
+            User u2 = userService.findUserByphone(phone);
+            if(u2 != null){
+                result.setStatus("error");
+                result.setResultMsg("phone number already exist!");
                 return result;
             }
             User user = new User();
