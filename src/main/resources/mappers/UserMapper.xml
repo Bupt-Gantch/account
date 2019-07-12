@@ -95,6 +95,16 @@
     where phone = #{phone}
   </select>
 
+<<<<<<< HEAD
+=======
+  <select id="selectByemail" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_new
+    where email = #{email}
+  </select>
+
+>>>>>>> changed by rongshuai
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user_new
     where id = #{id,jdbcType=INTEGER}

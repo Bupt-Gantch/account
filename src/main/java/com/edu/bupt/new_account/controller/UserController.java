@@ -1,24 +1,43 @@
 package com.edu.bupt.new_account.controller;
 
+<<<<<<< HEAD
 import com.edu.bupt.new_account.model.Relation;
 import com.edu.bupt.new_account.model.Result;
 import com.edu.bupt.new_account.model.Tenant;
 import com.edu.bupt.new_account.model.User;
+=======
+import com.edu.bupt.new_account.model.*;
+import com.edu.bupt.new_account.service.RuleService;
+>>>>>>> changed by rongshuai
 import com.edu.bupt.new_account.service.UserService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
+=======
+import org.springframework.transaction.annotation.Transactional;
+>>>>>>> changed by rongshuai
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/account")
+<<<<<<< HEAD
+=======
+@Transactional(rollbackFor = Exception.class)
+>>>>>>> changed by rongshuai
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+<<<<<<< HEAD
+=======
+    @Autowired
+    private RuleService ruleService;
+
+>>>>>>> changed by rongshuai
 
     //（tenant）登陆
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -67,6 +86,15 @@ public class UserController {
                 result.setResultMsg("phone number already exist!");
                 return result;
             }
+<<<<<<< HEAD
+=======
+            User u3 = userService.findUserByemail(email);
+            if(u3!=null){
+                result.setStatus("error");
+                result.setResultMsg("email already exist!");
+                return result;
+            }
+>>>>>>> changed by rongshuai
             User user = new User();
             user.setOpenid(openid);
             user.setEmail(email);
@@ -82,6 +110,10 @@ public class UserController {
             userService.deleteUserById(userService.findUserByOpenid(openid).getId());
             System.out.println(e);
             result.setStatus("error");
+<<<<<<< HEAD
+=======
+            result.setResultMsg("some error!");
+>>>>>>> changed by rongshuai
         } finally {
             return result;
         }
@@ -300,6 +332,104 @@ public class UserController {
         }
     }
 
+<<<<<<< HEAD
+=======
+    //解绑被绑定者及其网关 只有一个网关id  网关拥有者取消所有分享
+    @RequestMapping(value = "/deepUnBindedALLGate", method = RequestMethod.POST)
+    @ResponseBody
+    public Result deepUnBindedALLGate(@RequestBody String Info) {
+        JsonObject info = new JsonParser().parse(Info).getAsJsonObject();
+        Result result = new Result();
+        try {
+            String binded = info.get("customerid").getAsString();
+            String gateid = info.get("gateid").getAsString();
+            int bindedId = Integer.parseInt(binded);
+            List<Relation> relations = userService.getBindedRelations(bindedId);
+
+            if (relations.size() == 0) {
+                result.setStatus("error");
+                result.setResultMsg("不存在该绑定关系");
+                return result;
+            }
+
+            for(Relation re:relations){
+                //删除绑定关系
+                String re_gates = re.getGateid();
+                if(re_gates.indexOf(gateid)==-1){
+                    continue;
+                }
+
+                String[] originGates = re.getGateid().split(",");
+                String newGates = "";
+                int judge = 0;
+                for (String i : originGates) {
+                    if (!Arrays.asList(gateid).contains(i)) {
+                        newGates += i + ',';
+                        judge = 1;
+                    }
+                }
+                if (judge == 1) {
+                    newGates = newGates.substring(0, newGates.length() - 1);
+                }
+                if (newGates == "") {
+                    userService.unbind(re.getId());
+                }else {
+                    re.setGateid(newGates);
+                    userService.updateRelation(re);
+                }
+            }
+            //级联解绑
+            List<Rule> rules = ruleService.getBindedRules(gateid);//获得所有和gateid绑定的rule元组
+            List<Integer> ruleIds = new ArrayList<Integer>();
+            for(Rule r:rules){//获得所有的ruleId
+                ruleIds.add(r.getRuleid());
+            }
+            List<Rule2FilterKey> filterRelations = new ArrayList<Rule2FilterKey>();
+            for(Integer ruleId:ruleIds){//获得所有涉及到的rule2filter元组
+                filterRelations.addAll(ruleService.getBindedR2F(ruleId));
+            }
+            List<Filter> filters = new ArrayList<Filter>();
+            for(Rule2FilterKey R2F:filterRelations){//获得所有涉及到的filter元组
+                filters.add(ruleService.getBindedFilter(R2F.getFilterid()));
+            }
+            List<Rule2TransFormKey> transformRelations = new ArrayList<Rule2TransFormKey>();
+            for(Integer ruleId:ruleIds){//获得所有涉及到的rule2transform元组
+                transformRelations.addAll(ruleService.getBindedR2T(ruleId));
+            }
+            List<Transform> tranforms = new ArrayList<Transform>();
+            for(Rule2TransFormKey R2T:transformRelations){//获得所有涉及到的transform元组
+                tranforms.add(ruleService.getBindedTransform(R2T.getTransformid()));
+            }
+
+            //进行解绑
+            for(Rule2FilterKey R2F:filterRelations){//对rule2filter进行解绑
+                ruleService.unbindR2F(R2F);
+            }
+
+            for(Filter filter:filters){//对filter进行解绑
+                ruleService.unbindFilter(filter.getFilterid());
+            }
+
+            for(Rule2TransFormKey R2T:transformRelations){//对rule2transform进行解绑
+                ruleService.unbindR2T(R2T);
+            }
+
+            for(Transform transform:tranforms){//对transform进行解绑
+                ruleService.unbindTransform(transform.getTransformid());
+            }
+
+            for(Rule rule:rules){//对rule进行解绑
+                ruleService.unbindRule(rule.getRuleid());
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            result.setStatus("error");
+            result.setResultMsg("解除失败");
+        } finally {
+            return result;
+        }
+    }
+>>>>>>> changed by rongshuai
 
     //解绑绑定者及其网关
     @RequestMapping(value = "/unBinderGates", method = RequestMethod.POST)

@@ -1,11 +1,16 @@
 package com.edu.bupt.new_account.service.impl;
 
+<<<<<<< HEAD
 import com.edu.bupt.new_account.dao.RelationMapper;
 import com.edu.bupt.new_account.dao.TenantMapper;
 import com.edu.bupt.new_account.dao.UserMapper;
 import com.edu.bupt.new_account.model.Relation;
 import com.edu.bupt.new_account.model.Tenant;
 import com.edu.bupt.new_account.model.User;
+=======
+import com.edu.bupt.new_account.dao.*;
+import com.edu.bupt.new_account.model.*;
+>>>>>>> changed by rongshuai
 import com.edu.bupt.new_account.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RelationMapper relationMapper;
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> changed by rongshuai
     @Override
     public Tenant findTenantByNameAndPasswd(String tenantName, String passwd) {
         Tenant tenant = new Tenant();
@@ -33,6 +43,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public User findUserByemail(String email) {return userMapper.selectByemail(email);}
+
+    @Override
+>>>>>>> changed by rongshuai
     public Integer saveUser(User user) {
         return userMapper.insert(user);
     }
@@ -112,4 +128,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> changed by rongshuai
 }

@@ -14,6 +14,11 @@ public interface UserService {
 
     User findUserByOpenid(String openid);
 
+<<<<<<< HEAD
+=======
+    User findUserByemail(String email);
+
+>>>>>>> changed by rongshuai
     void updateUserInfo(User user);
 
     List<User> findAllUser();
