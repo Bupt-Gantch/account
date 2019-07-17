@@ -27,10 +27,7 @@ public interface UserMapper {
 
     User selectByPhone(String phone);
 
-<<<<<<< HEAD
-=======
     User selectByemail(String email);
 
->>>>>>> changed by rongshuai
     void deleteById(Integer id);
 }

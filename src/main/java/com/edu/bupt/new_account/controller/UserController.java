@@ -1,43 +1,27 @@
 package com.edu.bupt.new_account.controller;
 
-<<<<<<< HEAD
-import com.edu.bupt.new_account.model.Relation;
-import com.edu.bupt.new_account.model.Result;
-import com.edu.bupt.new_account.model.Tenant;
-import com.edu.bupt.new_account.model.User;
-=======
 import com.edu.bupt.new_account.model.*;
 import com.edu.bupt.new_account.service.RuleService;
->>>>>>> changed by rongshuai
 import com.edu.bupt.new_account.service.UserService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
-=======
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> changed by rongshuai
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/account")
-<<<<<<< HEAD
-=======
 @Transactional(rollbackFor = Exception.class)
->>>>>>> changed by rongshuai
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-<<<<<<< HEAD
-=======
     @Autowired
     private RuleService ruleService;
 
->>>>>>> changed by rongshuai
 
     //（tenant）登陆
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -86,15 +70,12 @@ public class UserController {
                 result.setResultMsg("phone number already exist!");
                 return result;
             }
-<<<<<<< HEAD
-=======
             User u3 = userService.findUserByemail(email);
             if(u3!=null){
                 result.setStatus("error");
                 result.setResultMsg("email already exist!");
                 return result;
             }
->>>>>>> changed by rongshuai
             User user = new User();
             user.setOpenid(openid);
             user.setEmail(email);
@@ -110,10 +91,7 @@ public class UserController {
             userService.deleteUserById(userService.findUserByOpenid(openid).getId());
             System.out.println(e);
             result.setStatus("error");
-<<<<<<< HEAD
-=======
             result.setResultMsg("some error!");
->>>>>>> changed by rongshuai
         } finally {
             return result;
         }
@@ -332,8 +310,6 @@ public class UserController {
         }
     }
 
-<<<<<<< HEAD
-=======
     //解绑被绑定者及其网关 只有一个网关id  网关拥有者取消所有分享
     @RequestMapping(value = "/deepUnBindedALLGate", method = RequestMethod.POST)
     @ResponseBody
@@ -429,7 +405,6 @@ public class UserController {
             return result;
         }
     }
->>>>>>> changed by rongshuai
 
     //解绑绑定者及其网关
     @RequestMapping(value = "/unBinderGates", method = RequestMethod.POST)
