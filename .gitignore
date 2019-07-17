@@ -16,6 +16,12 @@
 *.iml
 *.ipr
 
+application.yml
+
+### MybatisGenerator
+mybatisGenerator
+
+
 ### NetBeans ###
 /nbproject/private/
 /build/
