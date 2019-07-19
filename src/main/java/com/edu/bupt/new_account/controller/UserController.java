@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 @RestController
@@ -404,6 +409,76 @@ public class UserController {
         } finally {
             return result;
         }
+    }
+
+    @RequestMapping(value = "/deepUnBindedALLGate", method = RequestMethod.POST)
+    public Result clearGateway(@RequestBody String Info) {
+        JsonObject info = new JsonParser().parse(Info).getAsJsonObject();
+        Result result = new Result();
+        try {
+            String binded = info.get("customerid").getAsString();
+            String gateid = info.get("gateid").getAsString();
+            int bindedId = Integer.parseInt(binded);
+            List<Relation> relations = userService.getBindedRelations(bindedId);
+
+            if (relations.size() == 0) {
+                result.setStatus("error");
+                result.setResultMsg("不存在该绑定关系");
+                return result;
+            }
+
+            for(Relation re:relations){
+                //删除绑定关系
+                String re_gates = re.getGateid();
+                if(re_gates.indexOf(gateid)==-1){
+                    continue;
+                }
+
+                String[] originGates = re.getGateid().split(",");
+                String newGates = "";
+                int judge = 0;
+                for (String i : originGates) {
+                    if (!Arrays.asList(gateid).contains(i)) {
+                        newGates += i + ',';
+                        judge = 1;
+                    }
+                }
+                if (judge == 1) {
+                    newGates = newGates.substring(0, newGates.length() - 1);
+                }
+                if (newGates == "") {
+                    userService.unbind(re.getId());
+                }else {
+                    re.setGateid(newGates);
+                    userService.updateRelation(re);
+                }
+            }
+
+            URL url = new URL("http://47.105.120.203:30080/api/v1/smartruler/removeRules/"+gateid);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(15000);
+            conn.connect();
+            if (conn.getResponseCode() == 200){
+                InputStream is = conn.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                StringBuffer res = new StringBuffer();
+                String temp = null;
+                while ((temp = br.readLine()) != null){
+                    res.append(temp);
+                }
+                if (!res.equals("OK")){
+                    result.setStatus("error");
+                    result.setResultMsg("删除规则失败");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setStatus("error");
+            result.setResultMsg("删除规则失败");
+        }
+        return result;
     }
 
     //解绑绑定者及其网关
